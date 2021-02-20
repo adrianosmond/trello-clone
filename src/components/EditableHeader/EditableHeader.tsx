@@ -5,14 +5,18 @@ import Input from 'components/Input';
 const EditableHeader: FC<
   InputHTMLAttributes<HTMLInputElement> & {
     heading: string;
+    deselect: () => void;
   }
-> = ({ heading, onChange }) => {
+> = ({ heading, onChange, deselect }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    inputRef?.current?.focus();
-  }, [isEditing]);
+    if (isEditing) {
+      deselect();
+      inputRef?.current?.focus();
+    }
+  }, [isEditing, deselect]);
 
   if (isEditing) {
     return (

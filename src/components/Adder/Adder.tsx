@@ -5,8 +5,9 @@ import Input from 'components/Input';
 
 const Adder: FC<{
   onAdd: (name: string) => void;
+  deselect: () => void;
   label: string;
-}> = ({ onAdd, label }) => {
+}> = ({ onAdd, label, deselect }) => {
   const [newName, setNewName] = useState('');
   const add = useCallback(() => {
     if (newName.length > 0) {
@@ -20,6 +21,7 @@ const Adder: FC<{
       <Input
         value={newName}
         type="text"
+        onFocus={deselect}
         onChange={(event) => setNewName(event.target.value)}
         onKeyPress={(event) => {
           if (event.key === 'Enter') {

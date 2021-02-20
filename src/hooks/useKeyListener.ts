@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { useAppContext } from 'contexts/AppContext';
 
 export default () => {
-  const { editing, moveUp, moveDown, moveLeft, moveRight } = useAppContext();
+  const { selected, moveUp, moveDown, moveLeft, moveRight } = useAppContext();
 
   useEffect(() => {
     const keyListener = (e: KeyboardEvent) => {
-      if (editing) {
-        const { type, id } = editing;
+      if (selected) {
+        const { type, id } = selected;
 
         switch (e.key) {
           case 'ArrowUp': {
@@ -34,5 +34,5 @@ export default () => {
     document.addEventListener('keyup', keyListener);
 
     return () => document.removeEventListener('keyup', keyListener);
-  }, [editing]);
+  }, [moveDown, moveLeft, moveRight, moveUp, selected]);
 };

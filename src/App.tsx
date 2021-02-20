@@ -1,19 +1,19 @@
 import styled from 'styled-components';
 import { AppContext } from 'contexts/AppContext';
 import useColumnState from 'hooks/useColumnState';
-import useEditingState from 'hooks/useEditingState';
+import useSelectedState from 'hooks/useSelectedState';
 import ColumnGrid from 'components/ColumnGrid';
 import NewColumnForm from 'components/NewColumnForm';
 
 const App = () => {
   const columnState = useColumnState();
-  const editingState = useEditingState();
+  const selectedState = useSelectedState();
 
   return (
     <AppContext.Provider
       value={{
         ...columnState,
-        ...editingState,
+        ...selectedState,
       }}
     >
       <Wrapper>

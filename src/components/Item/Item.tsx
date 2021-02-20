@@ -8,25 +8,26 @@ import DeleteButton from 'components/DeleteButton';
 import EditableHeader from 'components/EditableHeader';
 
 const Item: FC<IItem> = ({ id, name }) => {
-  const { editing, stopEditing } = useAppContext();
-  const { remove, edit, rename } = useItem(id);
+  const { selected, deselect } = useAppContext();
+  const { remove, select, rename } = useItem(id);
   const ref = useRef<HTMLDivElement>(null);
   useOutsideClick(ref, () => {
-    // Only stop editing if we're currently editing THIS item
-    if (editing?.id === id) {
-      stopEditing();
+    // Only deselect if we've currently selected THIS item
+    if (selected?.id === id) {
+      deselect();
     }
   });
 
   return (
     <Card
       ref={ref}
-      onClick={edit}
-      selected={editing?.id === id}
+      onClick={select}
+      selected={selected?.id === id}
       heading={
         <EditableHeader
           heading={name}
           onChange={(event) => rename(event.target.value)}
+          deselect={deselect}
         />
       }
       actions={<DeleteButton onClick={remove} />}

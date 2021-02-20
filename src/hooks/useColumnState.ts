@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Draft } from 'immer';
 import { useImmerReducer } from 'use-immer';
 import { v4 as uuidv4 } from 'uuid';
-import { EditingTypes } from './useEditingState';
+import { SelectedTypes } from './useSelectedState';
 
 const STORAGE_KEY = 'APP_STATE';
 
@@ -25,10 +25,10 @@ export interface IColumnState {
   removeItem: (itemId: string) => void;
   renameColumn: (columnId: string, name: string) => void;
   renameItem: (itemId: string, name: string) => void;
-  moveUp: (type: EditingTypes, id: string) => void;
-  moveDown: (type: EditingTypes, id: string) => void;
-  moveLeft: (type: EditingTypes, id: string) => void;
-  moveRight: (type: EditingTypes, id: string) => void;
+  moveUp: (type: SelectedTypes, id: string) => void;
+  moveDown: (type: SelectedTypes, id: string) => void;
+  moveLeft: (type: SelectedTypes, id: string) => void;
+  moveRight: (type: SelectedTypes, id: string) => void;
 }
 
 enum ActionTypes {
@@ -79,25 +79,25 @@ interface IRenameItemAction {
 
 interface IMoveUpAction {
   type: ActionTypes.MOVE_UP;
-  editingType: EditingTypes;
+  editingType: SelectedTypes;
   id: string;
 }
 
 interface IMoveDownAction {
   type: ActionTypes.MOVE_DOWN;
-  editingType: EditingTypes;
+  editingType: SelectedTypes;
   id: string;
 }
 
 interface IMoveLeftAction {
   type: ActionTypes.MOVE_LEFT;
-  editingType: EditingTypes;
+  editingType: SelectedTypes;
   id: string;
 }
 
 interface IMoveRightAction {
   type: ActionTypes.MOVE_RIGHT;
-  editingType: EditingTypes;
+  editingType: SelectedTypes;
   id: string;
 }
 
@@ -190,7 +190,7 @@ const appColumnsReducer = (draft: Draft<IColumn[]>, action: Action) => {
 
     case ActionTypes.MOVE_UP: {
       const { editingType, id } = action;
-      if (editingType === EditingTypes.COLUMN) break;
+      if (editingType === SelectedTypes.COLUMN) break;
 
       const { columnIndex, itemIndex } = findItem(draft, id);
       swapNeighbouringArrayItems(
@@ -203,7 +203,7 @@ const appColumnsReducer = (draft: Draft<IColumn[]>, action: Action) => {
 
     case ActionTypes.MOVE_DOWN: {
       const { editingType, id } = action;
-      if (editingType === EditingTypes.COLUMN) break;
+      if (editingType === SelectedTypes.COLUMN) break;
 
       const { columnIndex, itemIndex } = findItem(draft, id);
       swapNeighbouringArrayItems(
@@ -216,7 +216,7 @@ const appColumnsReducer = (draft: Draft<IColumn[]>, action: Action) => {
 
     case ActionTypes.MOVE_LEFT: {
       const { editingType, id } = action;
-      if (editingType === EditingTypes.COLUMN) {
+      if (editingType === SelectedTypes.COLUMN) {
         const { columnIndex } = findColumn(draft, id);
         swapNeighbouringArrayItems(draft, columnIndex, columnIndex - 1);
       } else {
@@ -232,7 +232,7 @@ const appColumnsReducer = (draft: Draft<IColumn[]>, action: Action) => {
 
     case ActionTypes.MOVE_RIGHT: {
       const { editingType, id } = action;
-      if (editingType === EditingTypes.COLUMN) {
+      if (editingType === SelectedTypes.COLUMN) {
         const { columnIndex } = findColumn(draft, id);
         swapNeighbouringArrayItems(draft, columnIndex, columnIndex + 1);
       } else {
@@ -300,25 +300,25 @@ const useColumnState = (): IColumnState => {
   );
 
   const moveUp = useCallback(
-    (type: EditingTypes, id: string): void =>
+    (type: SelectedTypes, id: string): void =>
       dispatch({ type: ActionTypes.MOVE_UP, editingType: type, id }),
     [dispatch],
   );
 
   const moveDown = useCallback(
-    (type: EditingTypes, id: string): void =>
+    (type: SelectedTypes, id: string): void =>
       dispatch({ type: ActionTypes.MOVE_DOWN, editingType: type, id }),
     [dispatch],
   );
 
   const moveLeft = useCallback(
-    (type: EditingTypes, id: string): void =>
+    (type: SelectedTypes, id: string): void =>
       dispatch({ type: ActionTypes.MOVE_LEFT, editingType: type, id }),
     [dispatch],
   );
 
   const moveRight = useCallback(
-    (type: EditingTypes, id: string): void =>
+    (type: SelectedTypes, id: string): void =>
       dispatch({ type: ActionTypes.MOVE_RIGHT, editingType: type, id }),
     [dispatch],
   );

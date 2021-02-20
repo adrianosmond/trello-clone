@@ -5,7 +5,7 @@ import Adder from 'components/Adder';
 const NewItemForm: FC<{
   columnId: string;
 }> = ({ columnId }) => {
-  const { addItem } = useAppContext();
+  const { addItem, deselect } = useAppContext();
   const addItemToColumn = useCallback(
     (name: string) => {
       addItem(columnId, name);
@@ -13,7 +13,7 @@ const NewItemForm: FC<{
     [addItem, columnId],
   );
 
-  return <Adder label="Add item" onAdd={addItemToColumn} />;
+  return <Adder label="Add item" onAdd={addItemToColumn} deselect={deselect} />;
 };
 
 export default NewItemForm;

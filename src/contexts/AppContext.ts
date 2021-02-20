@@ -1,8 +1,8 @@
 import { useContext, createContext } from 'react';
 import { IColumnState } from 'hooks/useColumnState';
-import { IEditingState } from 'hooks/useEditingState';
+import { ISelectedState } from 'hooks/useSelectedState';
 
-export type IAppContext = IColumnState & IEditingState;
+export type IAppContext = IColumnState & ISelectedState;
 
 export const AppContext = createContext<IAppContext>({
   columns: [],
@@ -16,10 +16,10 @@ export const AppContext = createContext<IAppContext>({
   moveDown: () => {},
   moveLeft: () => {},
   moveRight: () => {},
-  editing: null,
-  editColumn: () => {},
-  editItem: () => {},
-  stopEditing: () => {},
+  selected: null,
+  selectColumn: () => {},
+  selectItem: () => {},
+  deselect: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);

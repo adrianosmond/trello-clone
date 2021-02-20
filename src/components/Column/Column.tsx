@@ -11,25 +11,26 @@ import Item from 'components/Item';
 import NewItemForm from 'components/NewItemForm';
 
 const Column: FC<IColumn> = ({ id, name, items }) => {
-  const { editing, stopEditing } = useAppContext();
-  const { remove, edit, rename } = useColumn(id);
+  const { selected, deselect } = useAppContext();
+  const { remove, select, rename } = useColumn(id);
   const ref = useRef<HTMLDivElement>(null);
   useOutsideClick(ref, () => {
-    // Only stop editing if we're currently editing THIS column
-    if (editing?.id === id) {
-      stopEditing();
+    // Only deselect if we've currently selected THIS column
+    if (selected?.id === id) {
+      deselect();
     }
   });
 
   return (
     <Wrapper
       ref={ref}
-      onClick={edit}
-      selected={editing?.id === id}
+      onClick={select}
+      selected={selected?.id === id}
       heading={
         <EditableHeader
           heading={name}
           onChange={(event) => rename(event.target.value)}
+          deselect={deselect}
         />
       }
       actions={<DeleteButton onClick={remove} />}
