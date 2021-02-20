@@ -1,17 +1,33 @@
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 import styled from 'styled-components';
+import { useAppContext } from 'contexts/AppContext';
 import { IColumn } from 'hooks/useColumnState';
 import useColumn from 'hooks/useColumn';
+import useOutsideClick from 'hooks/useOutsideClick';
 import Card from 'components/Card';
 import DeleteButton from 'components/DeleteButton';
 import Item from 'components/Item';
 import NewItemForm from 'components/NewItemForm';
 
 const Column: FC<IColumn> = ({ id, name, items }) => {
-  const { remove } = useColumn(id);
+  const { editing, stopEditing } = useAppContext();
+  const { remove, edit } = useColumn(id);
+  const ref = useRef<HTMLDivElement>(null);
+  useOutsideClick(ref, () => {
+    // Only stop editing if we're currently editing THIS column
+    if (editing?.id === id) {
+      stopEditing();
+    }
+  });
 
   return (
-    <Wrapper heading={name} actions={<DeleteButton onClick={remove} />}>
+    <Wrapper
+      ref={ref}
+      onClick={edit}
+      selected={editing?.id === id}
+      heading={name}
+      actions={<DeleteButton onClick={remove} />}
+    >
       {items.length > 0 && (
         <ItemList>
           {items.map((item) => (
@@ -28,6 +44,7 @@ const Column: FC<IColumn> = ({ id, name, items }) => {
 
 const Wrapper = styled(Card)`
   width: 18rem;
+  padding-bottom: 1rem;
 `;
 
 const ItemList = styled.ul`

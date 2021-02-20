@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { findColumn } from './useColumnState';
 
 export default (id: string) => {
-  const { columns, removeColumn } = useAppContext();
+  const { columns, removeColumn, editColumn } = useAppContext();
   const { column } = findColumn(columns, id);
 
   const remove = useCallback(() => removeColumn(column.id), [
@@ -11,8 +11,20 @@ export default (id: string) => {
     removeColumn,
   ]);
 
+  const edit = useCallback(
+    (event) => {
+      event.stopPropagation();
+      // Only count clicks on the actual element, not its children
+      if (event.target === event.currentTarget) {
+        editColumn(column.id);
+      }
+    },
+    [column.id, editColumn],
+  );
+
   return {
     column,
     remove,
+    edit,
   };
 };

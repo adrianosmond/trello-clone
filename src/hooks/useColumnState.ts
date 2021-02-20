@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { Draft } from 'immer';
 import { useImmerReducer } from 'use-immer';
 import { v4 as uuidv4 } from 'uuid';
+import { EditingTypes } from './useEditingState';
 
 const STORAGE_KEY = 'APP_STATE';
 
@@ -22,6 +23,10 @@ export interface IColumnState {
   removeColumn: (columnId: string) => void;
   addItem: (columnId: string, name: string) => void;
   removeItem: (itemId: string) => void;
+  moveUp: (type: EditingTypes, id: string) => void;
+  moveDown: (type: EditingTypes, id: string) => void;
+  moveLeft: (type: EditingTypes, id: string) => void;
+  moveRight: (type: EditingTypes, id: string) => void;
 }
 
 enum ActionTypes {
@@ -29,6 +34,10 @@ enum ActionTypes {
   ADD_ITEM,
   REMOVE_COLUMN,
   REMOVE_ITEM,
+  MOVE_UP,
+  MOVE_DOWN,
+  MOVE_LEFT,
+  MOVE_RIGHT,
 }
 
 interface IAddColumnAction {
@@ -52,11 +61,39 @@ interface IRemoveItemAction {
   itemId: string;
 }
 
+interface IMoveUpAction {
+  type: ActionTypes.MOVE_UP;
+  editingType: EditingTypes;
+  id: string;
+}
+
+interface IMoveDownAction {
+  type: ActionTypes.MOVE_DOWN;
+  editingType: EditingTypes;
+  id: string;
+}
+
+interface IMoveLeftAction {
+  type: ActionTypes.MOVE_LEFT;
+  editingType: EditingTypes;
+  id: string;
+}
+
+interface IMoveRightAction {
+  type: ActionTypes.MOVE_RIGHT;
+  editingType: EditingTypes;
+  id: string;
+}
+
 type Action =
   | IAddColumnAction
   | IAddItemAction
   | IRemoveColumnAction
-  | IRemoveItemAction;
+  | IRemoveItemAction
+  | IMoveUpAction
+  | IMoveDownAction
+  | IMoveLeftAction
+  | IMoveRightAction;
 
 export const findColumn = (columns: IColumn[], id: string) => {
   const columnIndex = columns.findIndex((col) => col.id === id);
@@ -79,6 +116,15 @@ export const findItem = (columns: IColumn[], id: string) => {
     item,
     itemIndex,
   };
+};
+
+const swapNeighbouringArrayItems = (arr: any[], idx1: number, idx2: number) => {
+  if (idx1 < 0 || idx2 < 0 || idx1 > arr.length - 1 || idx2 > arr.length - 1) {
+    return;
+  }
+  const tmp = arr[idx1];
+  arr[idx1] = arr[idx2];
+  arr[idx2] = tmp;
 };
 
 const appColumnsReducer = (draft: Draft<IColumn[]>, action: Action) => {
@@ -107,6 +153,64 @@ const appColumnsReducer = (draft: Draft<IColumn[]>, action: Action) => {
       const { itemId } = action;
       const { columnIndex, itemIndex } = findItem(draft, itemId);
       draft[columnIndex].items.splice(itemIndex, 1);
+      break;
+    }
+
+    case ActionTypes.MOVE_UP: {
+      const { editingType, id } = action;
+      if (editingType === EditingTypes.COLUMN) break;
+
+      const { columnIndex, itemIndex } = findItem(draft, id);
+      swapNeighbouringArrayItems(
+        draft[columnIndex].items,
+        itemIndex - 1,
+        itemIndex,
+      );
+      break;
+    }
+
+    case ActionTypes.MOVE_DOWN: {
+      const { editingType, id } = action;
+      if (editingType === EditingTypes.COLUMN) break;
+
+      const { columnIndex, itemIndex } = findItem(draft, id);
+      swapNeighbouringArrayItems(
+        draft[columnIndex].items,
+        itemIndex,
+        itemIndex + 1,
+      );
+      break;
+    }
+
+    case ActionTypes.MOVE_LEFT: {
+      const { editingType, id } = action;
+      if (editingType === EditingTypes.COLUMN) {
+        const { columnIndex } = findColumn(draft, id);
+        swapNeighbouringArrayItems(draft, columnIndex, columnIndex - 1);
+      } else {
+        const { columnIndex, itemIndex } = findItem(draft, id);
+        if (columnIndex > 0) {
+          draft[columnIndex - 1].items.push(
+            ...draft[columnIndex].items.splice(itemIndex, 1),
+          );
+        }
+      }
+      break;
+    }
+
+    case ActionTypes.MOVE_RIGHT: {
+      const { editingType, id } = action;
+      if (editingType === EditingTypes.COLUMN) {
+        const { columnIndex } = findColumn(draft, id);
+        swapNeighbouringArrayItems(draft, columnIndex, columnIndex + 1);
+      } else {
+        const { columnIndex, itemIndex } = findItem(draft, id);
+        if (columnIndex < draft.length - 1) {
+          draft[columnIndex + 1].items.push(
+            ...draft[columnIndex].items.splice(itemIndex, 1),
+          );
+        }
+      }
       break;
     }
 
@@ -151,12 +255,40 @@ const useColumnState = (): IColumnState => {
     [dispatch],
   );
 
+  const moveUp = useCallback(
+    (type: EditingTypes, id: string): void =>
+      dispatch({ type: ActionTypes.MOVE_UP, editingType: type, id }),
+    [dispatch],
+  );
+
+  const moveDown = useCallback(
+    (type: EditingTypes, id: string): void =>
+      dispatch({ type: ActionTypes.MOVE_DOWN, editingType: type, id }),
+    [dispatch],
+  );
+
+  const moveLeft = useCallback(
+    (type: EditingTypes, id: string): void =>
+      dispatch({ type: ActionTypes.MOVE_LEFT, editingType: type, id }),
+    [dispatch],
+  );
+
+  const moveRight = useCallback(
+    (type: EditingTypes, id: string): void =>
+      dispatch({ type: ActionTypes.MOVE_RIGHT, editingType: type, id }),
+    [dispatch],
+  );
+
   return {
     columns,
     addColumn,
     addItem,
     removeColumn,
     removeItem,
+    moveUp,
+    moveDown,
+    moveLeft,
+    moveRight,
   };
 };
 

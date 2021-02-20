@@ -1,10 +1,12 @@
 import { FC } from 'react';
 import styled from 'styled-components';
 import { useAppContext } from 'contexts/AppContext';
+import useKeyListener from 'hooks/useKeyListener';
 import Column from 'components/Column';
 
 const ColumnGrid: FC = () => {
   const { columns } = useAppContext();
+  useKeyListener();
 
   if (columns.length === 0) {
     return null;

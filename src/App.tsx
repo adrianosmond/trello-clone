@@ -1,14 +1,21 @@
 import styled from 'styled-components';
 import { AppContext } from 'contexts/AppContext';
 import useColumnState from 'hooks/useColumnState';
+import useEditingState from 'hooks/useEditingState';
 import ColumnGrid from 'components/ColumnGrid';
 import NewColumnForm from 'components/NewColumnForm';
 
 const App = () => {
-  const state = useColumnState();
+  const columnState = useColumnState();
+  const editingState = useEditingState();
 
   return (
-    <AppContext.Provider value={state}>
+    <AppContext.Provider
+      value={{
+        ...columnState,
+        ...editingState,
+      }}
+    >
       <Wrapper>
         <Title>Trello clone</Title>
         <ColumnGrid />
