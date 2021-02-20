@@ -1,27 +1,8 @@
 import styled from 'styled-components';
+import useColumnState from 'hooks/useColumnState';
 
 const App = () => {
-  const columns = [
-    {
-      id: 'col-1',
-      name: 'To do',
-      items: [
-        { id: 'item-1', name: 'First' },
-        { id: 'item-2', name: 'Second' },
-        { id: 'item-3', name: 'Third' },
-      ],
-    },
-    {
-      id: 'col-2',
-      name: 'In progress',
-      items: [],
-    },
-    {
-      id: 'col-3',
-      name: 'Done',
-      items: [],
-    },
-  ];
+  const { columns } = useColumnState();
 
   return (
     <Wrapper>
