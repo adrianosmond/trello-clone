@@ -1,25 +1,30 @@
 import styled from 'styled-components';
+import { AppContext } from 'contexts/AppContext';
 import useColumnState from 'hooks/useColumnState';
+import NewColumnForm from 'components/NewColumnForm';
 
 const App = () => {
-  const { columns } = useColumnState();
+  const state = useColumnState();
 
   return (
-    <Wrapper>
-      <Title>Trello clone</Title>
-      <Grid>
-        {columns.map((col) => (
-          <Column key={col.id}>
-            <h2>{col.name}</h2>
-            <ItemList>
-              {col.items.map((item) => (
-                <Card key={item.id}>{item.name}</Card>
-              ))}
-            </ItemList>
-          </Column>
-        ))}
-      </Grid>
-    </Wrapper>
+    <AppContext.Provider value={state}>
+      <Wrapper>
+        <Title>Trello clone</Title>
+        <Grid>
+          {state.columns.map((col) => (
+            <Column key={col.id}>
+              <h2>{col.name}</h2>
+              <ItemList>
+                {col.items.map((item) => (
+                  <Card key={item.id}>{item.name}</Card>
+                ))}
+              </ItemList>
+            </Column>
+          ))}
+        </Grid>
+        <NewColumnForm />
+      </Wrapper>
+    </AppContext.Provider>
   );
 };
 
