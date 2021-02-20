@@ -23,6 +23,8 @@ export interface IColumnState {
   removeColumn: (columnId: string) => void;
   addItem: (columnId: string, name: string) => void;
   removeItem: (itemId: string) => void;
+  renameColumn: (columnId: string, name: string) => void;
+  renameItem: (itemId: string, name: string) => void;
   moveUp: (type: EditingTypes, id: string) => void;
   moveDown: (type: EditingTypes, id: string) => void;
   moveLeft: (type: EditingTypes, id: string) => void;
@@ -34,6 +36,8 @@ enum ActionTypes {
   ADD_ITEM,
   REMOVE_COLUMN,
   REMOVE_ITEM,
+  RENAME_COLUMN,
+  RENAME_ITEM,
   MOVE_UP,
   MOVE_DOWN,
   MOVE_LEFT,
@@ -59,6 +63,18 @@ interface IRemoveColumnAction {
 interface IRemoveItemAction {
   type: ActionTypes.REMOVE_ITEM;
   itemId: string;
+}
+
+interface IRenameColumnAction {
+  type: ActionTypes.RENAME_COLUMN;
+  columnId: string;
+  name: string;
+}
+
+interface IRenameItemAction {
+  type: ActionTypes.RENAME_ITEM;
+  itemId: string;
+  name: string;
 }
 
 interface IMoveUpAction {
@@ -90,6 +106,8 @@ type Action =
   | IAddItemAction
   | IRemoveColumnAction
   | IRemoveItemAction
+  | IRenameColumnAction
+  | IRenameItemAction
   | IMoveUpAction
   | IMoveDownAction
   | IMoveLeftAction
@@ -153,6 +171,20 @@ const appColumnsReducer = (draft: Draft<IColumn[]>, action: Action) => {
       const { itemId } = action;
       const { columnIndex, itemIndex } = findItem(draft, itemId);
       draft[columnIndex].items.splice(itemIndex, 1);
+      break;
+    }
+
+    case ActionTypes.RENAME_COLUMN: {
+      const { columnId, name } = action;
+      const { columnIndex } = findColumn(draft, columnId);
+      draft[columnIndex].name = name;
+      break;
+    }
+
+    case ActionTypes.RENAME_ITEM: {
+      const { itemId, name } = action;
+      const { columnIndex, itemIndex } = findItem(draft, itemId);
+      draft[columnIndex].items[itemIndex].name = name;
       break;
     }
 
@@ -255,6 +287,18 @@ const useColumnState = (): IColumnState => {
     [dispatch],
   );
 
+  const renameColumn = useCallback(
+    (columnId: string, name: string): void =>
+      dispatch({ type: ActionTypes.RENAME_COLUMN, columnId, name }),
+    [dispatch],
+  );
+
+  const renameItem = useCallback(
+    (itemId: string, name: string): void =>
+      dispatch({ type: ActionTypes.RENAME_ITEM, itemId, name }),
+    [dispatch],
+  );
+
   const moveUp = useCallback(
     (type: EditingTypes, id: string): void =>
       dispatch({ type: ActionTypes.MOVE_UP, editingType: type, id }),
@@ -285,6 +329,8 @@ const useColumnState = (): IColumnState => {
     addItem,
     removeColumn,
     removeItem,
+    renameColumn,
+    renameItem,
     moveUp,
     moveDown,
     moveLeft,

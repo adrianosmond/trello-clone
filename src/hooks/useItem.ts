@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { findItem } from './useColumnState';
 
 export default (id: string) => {
-  const { columns, removeItem, editItem } = useAppContext();
+  const { columns, removeItem, editItem, renameItem } = useAppContext();
   const { item } = findItem(columns, id);
 
   const remove = useCallback(() => removeItem(item.id), [item.id, removeItem]);
@@ -19,5 +19,10 @@ export default (id: string) => {
     [editItem, id],
   );
 
-  return { item, remove, edit };
+  const rename = useCallback((name) => renameItem(item.id, name), [
+    item.id,
+    renameItem,
+  ]);
+
+  return { item, remove, edit, rename };
 };

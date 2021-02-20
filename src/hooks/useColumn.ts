@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { findColumn } from './useColumnState';
 
 export default (id: string) => {
-  const { columns, removeColumn, editColumn } = useAppContext();
+  const { columns, removeColumn, editColumn, renameColumn } = useAppContext();
   const { column } = findColumn(columns, id);
 
   const remove = useCallback(() => removeColumn(column.id), [
@@ -22,9 +22,15 @@ export default (id: string) => {
     [column.id, editColumn],
   );
 
+  const rename = useCallback((name) => renameColumn(column.id, name), [
+    column.id,
+    renameColumn,
+  ]);
+
   return {
     column,
     remove,
     edit,
+    rename,
   };
 };

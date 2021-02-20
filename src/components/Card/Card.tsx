@@ -1,5 +1,5 @@
 import { HTMLAttributes, ReactNode, forwardRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   heading: ReactNode;
@@ -23,6 +23,13 @@ interface ISelectable {
   selected?: boolean;
 }
 
+const selectedCardStyles = css`
+  background-color: #333;
+  color: #f5f5f5;
+  outline: none;
+  box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5);
+`;
+
 const Wrapper = styled.div<ISelectable>`
   padding: 0.5rem;
   border-radius: 0.25rem;
@@ -35,14 +42,7 @@ const Wrapper = styled.div<ISelectable>`
     margin-top: 0.5rem;
   }
 
-  ${({ selected }) =>
-    selected &&
-    `
-    background-color: #333;
-    color: #f5f5f5;
-    outline: none;
-    box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5);
-  `}
+  ${({ selected }) => selected && selectedCardStyles}
 `;
 
 const Header = styled.div`
