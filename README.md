@@ -1,46 +1,42 @@
-# Getting Started with Create React App
+# Trello clone
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## A live version
 
-## Available Scripts
+You can [see a live version of the project running here](https://trello-clone-adrian-osmond.netlify.app/)
+## Running the project
 
-In the project directory, you can run:
+You can install the project by running 
+- `npm i`
+- `npm start`
 
-### `npm start`
+from inside the project directory. Once it has finished building, you'll be able to see it at [http://localhost:3000](http://localhost:3000) in your browser.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## How to use
+- You can add columns by entering the name into the text box at the bottom of the app and either hitting enter or clicking the "Add column" button
+- You can add items to a column by entering the name into the text box at the bottom of the column and either hitting enter or clicking the "Add item" button
+- You can rename both columns and items by clicking their name
+- You can select both columns and items by clicking on them. The selected column/item will change colour to show that it is selected. Clicking outside of the column/item will unselect it.
+- When a column/item is selected, it can be moved by using the arrow keys on the keyboard.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## The future
+Here are some things I would've considered doing, given more time or if this was a real project
 
-### `npm test`
+### Development
+- If this were a proper project using localStorage probably wouldn't cut it. It would probably need user management and an API. As it grew the simple state management I currently have would probably not be enough. Using something like Redux might be required
+- Working with a real designer I could've identified things that were good candidates to be variables and components. Currently colours like `#333` and sizes like `0.5rem` are littered throughout the codebase.
+- Performance testing. I think the app loads fast enough as it is now, but after adding a bunch of other features it'd be good to reassess and see if we need to do anything about it.
+- Unit and integration tests, obviously
+- Proper manual testing, on multiple devices and browsers.
+- Accessibility. Support for keyboard users wouldn't take too much more work, but support for screen readers would but quite a lot of effort I suspect.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### UX
+- The project's UX would clearly benefit from the addition of drag and drop to the UI. I didn't think that it would be feasible to include it in the allotted 4 hours without using some existing React components (I've used [React DnD](https://github.com/react-dnd/react-dnd) for this in the past). 
+- The UX would also benefit from some animations when moving items around the columns ([react-flip-toolkit](https://github.com/aholachek/react-flip-toolkit) does this nicely)
+- The user shouldn't be able to perform destructive actions (delete a card or item) without confirming that they want to do this first
+- Proper responsive design is needed - relying on the keyboard for controls clearly isn't touch screen friendly
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## More info
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
