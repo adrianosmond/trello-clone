@@ -19,12 +19,16 @@ export interface IColumn {
 export interface IColumnState {
   columns: IColumn[];
   addColumn: (name: string) => void;
+  removeColumn: (columnId: string) => void;
   addItem: (columnId: string, name: string) => void;
+  removeItem: (itemId: string) => void;
 }
 
 enum ActionTypes {
   ADD_COLUMN,
   ADD_ITEM,
+  REMOVE_COLUMN,
+  REMOVE_ITEM,
 }
 
 interface IAddColumnAction {
@@ -38,7 +42,21 @@ interface IAddItemAction {
   name: string;
 }
 
-type Action = IAddColumnAction | IAddItemAction;
+interface IRemoveColumnAction {
+  type: ActionTypes.REMOVE_COLUMN;
+  columnId: string;
+}
+
+interface IRemoveItemAction {
+  type: ActionTypes.REMOVE_ITEM;
+  itemId: string;
+}
+
+type Action =
+  | IAddColumnAction
+  | IAddItemAction
+  | IRemoveColumnAction
+  | IRemoveItemAction;
 
 export const findColumn = (columns: IColumn[], id: string) => {
   const columnIndex = columns.findIndex((col) => col.id === id);
@@ -78,6 +96,20 @@ const appColumnsReducer = (draft: Draft<IColumn[]>, action: Action) => {
       break;
     }
 
+    case ActionTypes.REMOVE_COLUMN: {
+      const { columnId } = action;
+      const { columnIndex } = findColumn(draft, columnId);
+      draft.splice(columnIndex, 1);
+      break;
+    }
+
+    case ActionTypes.REMOVE_ITEM: {
+      const { itemId } = action;
+      const { columnIndex, itemIndex } = findItem(draft, itemId);
+      draft[columnIndex].items.splice(itemIndex, 1);
+      break;
+    }
+
     default:
       throw new Error('Unexpected action type');
   }
@@ -107,10 +139,24 @@ const useColumnState = (): IColumnState => {
     [dispatch],
   );
 
+  const removeColumn = useCallback(
+    (columnId: string): void =>
+      dispatch({ type: ActionTypes.REMOVE_COLUMN, columnId }),
+    [dispatch],
+  );
+
+  const removeItem = useCallback(
+    (itemId: string): void =>
+      dispatch({ type: ActionTypes.REMOVE_ITEM, itemId }),
+    [dispatch],
+  );
+
   return {
     columns,
     addColumn,
     addItem,
+    removeColumn,
+    removeItem,
   };
 };
 

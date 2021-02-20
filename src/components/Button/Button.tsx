@@ -1,7 +1,17 @@
 import styled from 'styled-components';
 
-const Button = styled.button`
-  padding: 0.25rem 0.5rem;
+export enum ButtonVariants {
+  DEFAULT,
+  ICON,
+}
+
+interface IButton {
+  variant?: ButtonVariants;
+}
+
+const Button = styled.button<IButton>`
+  padding: ${({ variant }) =>
+    variant === ButtonVariants.ICON ? `0.25rem;` : '0.25rem 0.5rem'};
   background-color: #ddd;
   color: #333;
   border-radius: 0.25rem;
