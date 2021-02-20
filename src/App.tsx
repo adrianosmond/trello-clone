@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { AppContext } from 'contexts/AppContext';
 import useColumnState from 'hooks/useColumnState';
 import NewColumnForm from 'components/NewColumnForm';
+import NewItemForm from 'components/NewItemForm';
 
 const App = () => {
   const state = useColumnState();
@@ -12,14 +13,19 @@ const App = () => {
         <Title>Trello clone</Title>
         <Grid>
           {state.columns.map((col) => (
-            <Column key={col.id}>
-              <h2>{col.name}</h2>
-              <ItemList>
-                {col.items.map((item) => (
-                  <Card key={item.id}>{item.name}</Card>
-                ))}
-              </ItemList>
-            </Column>
+            <li>
+              <Column key={col.id}>
+                <h2>{col.name}</h2>
+                {col.items.length > 0 && (
+                  <ItemList>
+                    {col.items.map((item) => (
+                      <Card key={item.id}>{item.name}</Card>
+                    ))}
+                  </ItemList>
+                )}
+                <NewItemForm columnId={col.id} />
+              </Column>
+            </li>
           ))}
         </Grid>
         <NewColumnForm />
