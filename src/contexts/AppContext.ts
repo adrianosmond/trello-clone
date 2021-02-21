@@ -20,6 +20,8 @@ export const AppContext = createContext<IAppContext>({
   selectColumn: () => {},
   selectItem: () => {},
   deselect: () => {},
+  seenKeyboardHint: false,
+  dismissKeyboardHint: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);

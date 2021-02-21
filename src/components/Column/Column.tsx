@@ -62,7 +62,7 @@ interface IItemListProps {
 }
 
 const ItemList = styled.ul<IItemListProps>`
-  background-color: #ccc;
+  background-color: #eee;
   border-radius: 0.25rem;
   padding: 0.5rem;
   box-shadow: inset 0 0 0.25rem rgba(0, 0, 0, 0.1);

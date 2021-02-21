@@ -33,7 +33,11 @@ const EditableHeader: FC<
       />
     );
   }
-  return <TextButton onClick={() => setIsEditing(true)}>{heading}</TextButton>;
+  return (
+    <TextButton onClick={() => setIsEditing(true)} title="Click to edit">
+      {heading}
+    </TextButton>
+  );
 };
 
 const TextButton = styled.button`

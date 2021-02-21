@@ -15,6 +15,7 @@ const Button = styled.button<IButton>`
   background-color: #ddd;
   color: #333;
   border-radius: 0.25rem;
+  white-space: nowrap;
 `;
 
 export default Button;

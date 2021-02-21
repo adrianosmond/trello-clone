@@ -15,10 +15,17 @@ export interface ISelectedState {
   selectColumn: (columnId: string) => void;
   selectItem: (itemId: string) => void;
   deselect: () => void;
+  seenKeyboardHint: boolean;
+  dismissKeyboardHint: () => void;
 }
+
+const STORAGE_KEY = 'SEEN_ARROW_HINT';
 
 const useEditingState = (): ISelectedState => {
   const [selected, setSelected] = useState<SelectedState | null>(null);
+  const [seenKeyboardHint, setSeenKeyboardHint] = useState(
+    !!localStorage.getItem(STORAGE_KEY),
+  );
 
   const selectColumn = useCallback((columnId: string): void => {
     setSelected({ type: SelectedTypes.COLUMN, id: columnId });
@@ -28,8 +35,13 @@ const useEditingState = (): ISelectedState => {
     setSelected({ type: SelectedTypes.ITEM, id: itemId });
   }, []);
 
-  const deselect = useCallback((): void => {
+  const deselect = useCallback(() => {
     setSelected(null);
+  }, []);
+
+  const dismissKeyboardHint = useCallback(() => {
+    setSeenKeyboardHint(true);
+    localStorage.setItem(STORAGE_KEY, 'true');
   }, []);
 
   return {
@@ -37,6 +49,8 @@ const useEditingState = (): ISelectedState => {
     selectColumn,
     selectItem,
     deselect,
+    seenKeyboardHint,
+    dismissKeyboardHint,
   };
 };
 
